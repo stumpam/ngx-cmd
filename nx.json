@@ -1,5 +1,5 @@
 {
-  "npmScope": "ng-cmd",
+  "npmScope": "example",
   "implicitDependencies": {
     "angular.json": "*",
     "package.json": "*",
@@ -8,10 +8,13 @@
     "nx.json": "*"
   },
   "projects": {
-    "ng-cmd-e2e": {
+    "example-e2e": {
       "tags": []
     },
-    "ng-cmd": {
+    "example": {
+      "tags": []
+    },
+    "ngx-cmd": {
       "tags": []
     }
   }

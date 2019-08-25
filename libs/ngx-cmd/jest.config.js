@@ -1,9 +1,9 @@
 module.exports = {
-  name: 'ng-cmd',
+  name: 'ngx-cmd',
   preset: '../../jest.config.js',
-  coverageDirectory: '../../coverage/apps/ng-cmd',
+  coverageDirectory: '../../coverage/libs/ngx-cmd',
   snapshotSerializers: [
     'jest-preset-angular/AngularSnapshotSerializer.js',
-    'jest-preset-angular/HTMLCommentSerializer.js'
-  ]
+    'jest-preset-angular/HTMLCommentSerializer.js',
+  ],
 };

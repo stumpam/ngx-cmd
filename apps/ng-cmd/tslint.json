@@ -1,7 +1,0 @@
-{
-  "extends": "../../tslint.json",
-  "rules": {
-    "directive-selector": [true, "attribute", "ngCmd", "camelCase"],
-    "component-selector": [true, "element", "ng-cmd", "kebab-case"]
-  }
-}

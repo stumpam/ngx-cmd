@@ -1,9 +1,9 @@
 import { getGreeting } from '../support/app.po';
 
-describe('ng-cmd', () => {
+describe('example', () => {
   beforeEach(() => cy.visit('/'));
 
   it('should display welcome message', () => {
-    getGreeting().contains('Welcome to ng-cmd!');
+    getGreeting().contains('Welcome to example!');
   });
 });
