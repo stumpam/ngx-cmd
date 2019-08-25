@@ -1,7 +1,7 @@
 {
   "extends": "../../tslint.json",
   "rules": {
-    "directive-selector": [true, "attribute", "dale", "camelCase"],
-    "component-selector": [true, "element", "dale", "kebab-case"]
+    "directive-selector": [true, "attribute", "ngx-cmd", "camelCase"],
+    "component-selector": [true, "element", "ngx-cmd", "kebab-case"]
   }
 }
