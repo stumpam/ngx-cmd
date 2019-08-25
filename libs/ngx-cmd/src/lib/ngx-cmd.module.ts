@@ -34,9 +34,9 @@ interface Evt {
 }
 
 export let evt: Evt;
-export let err: (err: any) => void;
-export let warn: (warn: any) => void;
-export let log: (log: any) => void;
+export let err: (err: string) => void;
+export let warn: (warn: string) => void;
+export let log: (log: string) => void;
 
 @NgModule()
 export class NgxCmdModule {
@@ -56,9 +56,9 @@ export class NgxCmdModule {
     execIgnore = execIgnoreEmpty(injector);
     cmdIgnore = execIgnore;
     regCmd = registerEmpty(injector);
-    evt = evtEmpty(this.injector);
-    err = errEmpty(this.injector);
-    warn = warnEmpty(this.injector);
-    log = logEmpty(this.injector);
+    evt = evtEmpty(injector);
+    err = errEmpty(injector);
+    warn = warnEmpty(injector);
+    log = logEmpty(injector);
   }
 }

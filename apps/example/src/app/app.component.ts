@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
 import { regCmd, cmd } from '@stumar/ngx-cmd';
+import { Observable } from 'rxjs';
 
 declare global {
   interface Cmd {
     // tslint:disable-next-line: callable-types
-    (name: 'test'): void;
+    (name: 'test'): Observable<never>;
   }
 }
 
@@ -18,6 +19,6 @@ export class AppComponent {
 
   constructor() {
     regCmd('test', () => console.log('run'));
-    cmd('test');
+    cmd('test').subscribe({complete: () => console.log('data: ')});
   }
 }

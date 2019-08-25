@@ -55,7 +55,7 @@ export class CommandService {
     }
 
     const [fn, origCtx] = this.commands.get(name) as Command;
-    let result$: T | Observable<T> | undefined;
+    let result$: T | Observable<T>;
 
     try {
       result$ =
