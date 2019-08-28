@@ -1,8 +1,26 @@
 {
   "name": "@stumpam/ngx-cmd",
   "version": "1.0.0",
+  "description": "Command library for Angular",
+  "homepage": "https://github.com/stumpam/ngx-cmd",
+  "author": "Martin Štumpa (https://github.com/stumpam)",
+  "license": "MIT",
+  "keywords": [
+    "ng",
+    "angular",
+    "library",
+    "commands",
+    "events"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stumpam/ngx-cmd"
+  },
+  "bugs": {
+    "url": "https://github.com/stumpam/ngx-cmd/issues"
+  },
   "peerDependencies": {
-    "@angular/common": "^8.1.1",
-    "@angular/core": "^8.1.1"
+    "@angular/core": "^8.1.1",
+    "rxjs": "~6.5.2"
   }
 }
