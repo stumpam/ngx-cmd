@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { regCmd, cmd } from '@stumar/ngx-cmd';
+import { regCmd, cmd } from '@stumpam/ngx-cmd';
 import { Observable } from 'rxjs';
 
 declare global {

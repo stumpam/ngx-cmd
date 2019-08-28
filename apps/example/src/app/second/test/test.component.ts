@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { cmd } from '@stumar/ngx-cmd';
+import { cmd } from '@stumpam/ngx-cmd';
 
 @Component({
   selector: 'example-test',
