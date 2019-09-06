@@ -10,9 +10,27 @@ export const enum ExecType {
   'wait',
 }
 
-type Command = [(...args: any) => any, object | undefined];
+interface CommandStore {
+  [key: string]: CommandStore | UnknownFn;
+}
+type UnknownFn = (...args: any) => unknown;
+type Command = [(...args: any) => unknown, object | undefined];
 
 const ignore = (): Observable<never> => EMPTY;
+
+let cmdß: CommandService | undefined;
+
+export const cmd = <T>(name: string, payload?: any, type?: ExecType) =>
+  cmdß.exec<T>(name, payload, type);
+
+export const cmdWait = <T>(name: string, payload?: any): Observable<T> =>
+  cmdß.exec<T>(name, payload, ExecType.wait);
+
+export const cmdIgnore = <T>(name: string, payload?: any): Observable<T> =>
+  cmdß.exec<T>(name, payload, ExecType.ignore);
+
+export const regCmd = (name: string, fn: (...args: any) => any) =>
+  cmdß.registerCommand(name, fn);
 
 @Injectable({
   providedIn: 'root',
@@ -20,6 +38,10 @@ const ignore = (): Observable<never> => EMPTY;
 export class CommandService {
   private readonly commands = new Map<string, Command>();
   private readonly commandEvt$ = new Subject<Event>();
+
+  constructor() {
+    cmdß = this;
+  }
 
   registerCommand(name: string, fn: (...args: any) => any, ctx?: object): void {
     if (this.commands.has(name)) {
@@ -67,7 +89,6 @@ export class CommandService {
     this.commandEvt$.next({ type: 'cmd:exec', payload: name });
     return !result$ ? EMPTY : isObservable(result$) ? result$ : of(result$);
   }
-
 
   private wait<T>(
     name: string,

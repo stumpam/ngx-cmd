@@ -3,6 +3,11 @@ export interface Event {
   payload?: any;
 }
 
+export interface Evt {
+  (name: string, payload?: any): void;
+  (name: Event): void;
+}
+
 export interface Error {
   type: 'evt:err';
   payload?: ErrPayload;

@@ -3,7 +3,6 @@ import { TestBed } from '@angular/core/testing';
 
 import { CommandService, ExecType } from './command.service';
 
-// tslint:disable: no-unbound-method
 class Test {
   number = 0;
 
