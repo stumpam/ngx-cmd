@@ -10,6 +10,13 @@ export const enum ExecType {
   'wait',
 }
 
+declare global {
+  // tslint:disable-next-line: no-empty-interface
+  export interface Cmd {
+    // <T>(name: string, payload?: any, ctx?: object): Observable<T>;
+  }
+}
+
 interface CommandStore {
   [key: string]: CommandStore | UnknownFn;
 }
@@ -20,14 +27,14 @@ const ignore = (): Observable<never> => EMPTY;
 
 let cmdß: CommandService | undefined;
 
-export const cmd = <T>(name: string, payload?: any, type?: ExecType) =>
-  cmdß.exec<T>(name, payload, type);
+export const cmd: Cmd = (name: string, payload?: any, type?: ExecType) =>
+  cmdß.exec(name, payload, type);
 
-export const cmdWait = <T>(name: string, payload?: any): Observable<T> =>
-  cmdß.exec<T>(name, payload, ExecType.wait);
+export const cmdWait: Cmd = (name: string, payload?: any) =>
+  cmdß.exec(name, payload, ExecType.wait);
 
-export const cmdIgnore = <T>(name: string, payload?: any): Observable<T> =>
-  cmdß.exec<T>(name, payload, ExecType.ignore);
+export const cmdIgnore: Cmd = (name: string, payload?: any) =>
+  cmdß.exec(name, payload, ExecType.ignore);
 
 export const regCmd = (name: string, fn: (...args: any) => any) =>
   cmdß.registerCommand(name, fn);
