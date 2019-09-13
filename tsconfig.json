@@ -16,8 +16,7 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@example/ngx-cmd": ["libs/ngx-cmd/src/index.ts"],
-      "@stumpam/ngx-cmd": ["dist/libs/ngx-cmd"]
+      "@stumpam/ngx-cmd": ["libs/ngx-cmd/src"]
     }
   },
   "exclude": ["node_modules", "tmp"]

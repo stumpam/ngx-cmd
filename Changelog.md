@@ -1,3 +1,6 @@
+## Version 1.1.1 - 9.9.2019
+- Fix when cmd function is not using global Cmd interface
+
 ## Version 1.1.0 - 6.9.2019
 - internal refactor
 - ExecType, Event and Evt interfaces are in public api
