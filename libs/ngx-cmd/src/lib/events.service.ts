@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
+import { Observable, Subject, merge } from 'rxjs';
 
 import { CommandService } from './command.service';
 import {
@@ -12,11 +12,16 @@ import {
   Warn,
   WarnPayload,
 } from './events.interface';
+import { filter, pluck } from 'rxjs/operators';
 
 export let evtß: EventsService | undefined;
 
 export const evt: Evt = (event: Event | string, payload?: any) =>
   evtß.emit(event as any, payload);
+
+export const getEvt = (name: string) => evtß.getEvt(name);
+
+export const getEvts = () => evtß.getEvents$();
 
 export const err = (payload: any) => evtß.emit('err', payload);
 
@@ -29,6 +34,7 @@ export const warn = (payload: any) => evtß.emit('warn', payload);
 })
 export class EventsService {
   private readonly events$ = new Subject<Event>();
+  readonly allEvents$ = merge(this.cmd.getCommandEvt(), this.events$);
 
   constructor(private readonly cmd: CommandService) {
     evtß = this;
@@ -39,6 +45,13 @@ export class EventsService {
 
   getEvents$(): Observable<Event> {
     return this.events$.asObservable();
+  }
+
+  getEvt(name: string) {
+    return this.events$.pipe(
+      filter(event => event.type === `evt:${name}`),
+      pluck('payload'),
+    );
   }
 
   emit(name: string, payload?: any): void;
