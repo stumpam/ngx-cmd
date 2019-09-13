@@ -21,6 +21,8 @@ interface CommandStore {
   [key: string]: (...args: any[]) => any;
 }
 
+export type CommandObject = CommandStore;
+
 type Command = [(...args: any) => any, object | undefined];
 
 const ignore = (): Observable<never> => EMPTY;
@@ -38,6 +40,9 @@ export const cmdIgnore: Cmd = <T>(name: string, payload?: any): Observable<T> =>
 
 export const regCmd = (name: string, fn: (...args: any) => any) =>
   cmdß.registerCommand(name, fn);
+
+export const regManCmd = (scope: string, cmds: CommandObject) =>
+  cmdß.registerManyCommands(scope, cmds);
 
 @Injectable({
   providedIn: 'root',
@@ -57,6 +62,12 @@ export class CommandService {
 
     this.commands = { ...this.commands, [name]: fn };
     this.commandEvt$.next({ type: 'cmd:reg', payload: name });
+  }
+
+  registerManyCommands(scope: string, store: CommandStore) {
+    Object.keys(store).forEach(key => {
+      this.registerCommand(`${scope}.${key}`, store[key]);
+    });
   }
 
   getCommandEvt(): Observable<Event> {
@@ -120,5 +131,6 @@ export class CommandService {
     const { [name]: _, ...commands } = this.commands;
 
     this.commands = commands;
+    this.commandEvt$.next({ type: 'cmd:unreg', payload: name });
   }
 }
