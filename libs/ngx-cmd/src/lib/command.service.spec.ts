@@ -8,7 +8,7 @@ class Test {
 
   constructor(svc: CommandService) {
     svc.registerCommand('testArrow', () => (this.number = 5));
-    svc.registerCommand('testFn', this.setNumber, this);
+    svc.registerCommand('testFn', this.setNumber);
     svc.registerCommand('testBind', this.setNumber.bind(this));
     svc.registerCommand('testReBind', this.setNumber.bind(this));
     svc.registerCommand('testCtx', this.setNumber);
@@ -24,7 +24,7 @@ class Test2 {
   constructor(svc: CommandService) {
     svc.registerCommand('testBind', this.test.bind(this));
     svc.registerCommand('testArrow', args => this.test(args));
-    svc.registerCommand('testGiven', this.test, this);
+    svc.registerCommand('testGiven', this.test);
     svc.registerCommand('testCustom', this.test);
   }
   test(input: any): void {
@@ -61,16 +61,16 @@ describe('CommandService', () => {
   it('should register command', () => {
     service.registerCommand('test', () => {});
 
-    expect((service as any).commands.get('test')).toBeTruthy();
+    expect((service as any).commands.test).toBeTruthy();
   });
 
   describe('Test execution', () => {
     let svc: Test;
     beforeEach(() => (svc = new Test(service)));
 
-    it('it should pass correct ctx in custom bind function', () => {
+    it('it should fail withou correct ctx in custom bind function', () => {
       service.exec('testFn');
-      expect(svc.number).toBe(3);
+      expect(svc.number).toBe(0);
     });
 
     it('it should pass correct ctx in Arrow fn', () => {
@@ -83,21 +83,13 @@ describe('CommandService', () => {
       expect(svc.number).toBe(3);
     });
 
-    it('it should pass correct ctx with given ctx', () => {
-      const t2 = new TestEmpty();
-
-      expect(t2.number).toBe(0);
-      service.exec('testCtx', undefined, undefined, t2);
-      expect(t2.number).toBe(3);
-    });
-
     it(`it won't work when fn is already bounded`, () => {
       const t2 = new TestEmpty();
 
       expect(svc.number).toBe(0);
       expect(t2.number).toBe(0);
 
-      service.exec('testReBind', undefined, undefined, t2);
+      service.exec('testReBind', undefined, undefined);
       expect(svc.number).toBe(3);
       expect(t2.number).toBe(0);
     });
@@ -116,18 +108,6 @@ describe('CommandService', () => {
     it('it should pass correct args with Arrow fn', () => {
       expect(svc.variable).toEqual({});
       service.exec('testArrow', { abc: 'def' });
-      expect(svc.variable).toEqual({ abc: 'def' });
-    });
-
-    it('it should pass correct args with given ctx', () => {
-      expect(svc.variable).toEqual({});
-      service.exec('testGiven', { abc: 'def' });
-      expect(svc.variable).toEqual({ abc: 'def' });
-    });
-
-    it('it should pass correct args with custom ctx', () => {
-      expect(svc.variable).toEqual({});
-      service.exec('testCustom', { abc: 'def' }, undefined, svc);
       expect(svc.variable).toEqual({ abc: 'def' });
     });
   });

@@ -10,23 +10,25 @@ export const enum ExecType {
   'wait',
 }
 
+export interface Cmd {}
+
 interface CommandStore {
-  [key: string]: CommandStore | UnknownFn;
+  [key: string]: (...args: any[]) => any;
 }
-type UnknownFn = (...args: any) => unknown;
-type Command = [(...args: any) => unknown, object | undefined];
+
+type Command = [(...args: any) => any, object | undefined];
 
 const ignore = (): Observable<never> => EMPTY;
 
 let cmdß: CommandService | undefined;
 
-export const cmd = <T>(name: string, payload?: any, type?: ExecType) =>
+export const cmd: Cmd = <T>(name: string, payload?: any, type?: ExecType) =>
   cmdß.exec<T>(name, payload, type);
 
-export const cmdWait = <T>(name: string, payload?: any): Observable<T> =>
+export const cmdWait: Cmd = <T>(name: string, payload?: any): Observable<T> =>
   cmdß.exec<T>(name, payload, ExecType.wait);
 
-export const cmdIgnore = <T>(name: string, payload?: any): Observable<T> =>
+export const cmdIgnore: Cmd = <T>(name: string, payload?: any): Observable<T> =>
   cmdß.exec<T>(name, payload, ExecType.ignore);
 
 export const regCmd = (name: string, fn: (...args: any) => any) =>
@@ -36,19 +38,19 @@ export const regCmd = (name: string, fn: (...args: any) => any) =>
   providedIn: 'root',
 })
 export class CommandService {
-  private readonly commands = new Map<string, Command>();
+  private commands: CommandStore = {};
   private readonly commandEvt$ = new Subject<Event>();
 
   constructor() {
     cmdß = this;
   }
 
-  registerCommand(name: string, fn: (...args: any) => any, ctx?: object): void {
-    if (this.commands.has(name)) {
+  registerCommand(name: string, fn: (...args: any) => any): void {
+    if (this.commands[name]) {
       this.exec('err', `Command ${name} already exists`);
     }
 
-    this.commands.set(name, [fn, ctx]);
+    this.commands = { ...this.commands, [name]: fn };
     this.commandEvt$.next({ type: 'cmd:reg', payload: name });
   }
 
@@ -60,9 +62,11 @@ export class CommandService {
     name: string,
     payload?: any,
     type?: ExecType,
-    ctx?: object,
   ): Observable<T> {
-    if (!this.commands.has(name)) {
+    if (
+      this.commands[name] === undefined ||
+      typeof this.commands[name] !== 'function'
+    ) {
       const cases = {
         [ExecType.ignore]: ignore,
         [ExecType.wait]: this.wait.bind(this),
@@ -72,16 +76,13 @@ export class CommandService {
         name,
         payload,
         type,
-        ctx,
       );
     }
 
-    const [fn, origCtx] = this.commands.get(name) as Command;
     let result$: T | Observable<T>;
 
     try {
-      result$ =
-        !ctx && !origCtx ? fn(payload) : fn.call(ctx || origCtx, payload);
+      result$ = this.commands[name](payload);
     } catch (err) {
       result$ = throwError(err);
     }
@@ -94,17 +95,25 @@ export class CommandService {
     name: string,
     payload: any,
     type: ExecType,
-    ctx: object,
   ): Observable<T | any> {
     return this.commandEvt$.pipe(
       filter(event => event.type === 'cmd:reg' && event.payload === name),
-      switchMap(() => this.exec(name, payload, type, ctx)),
+      switchMap(() => this.exec(name, payload, type)),
     );
   }
 
   private error(name: string): Observable<never> {
     const msg = `Command '${name}' was not found`;
-    this.commands.has('err') ? this.exec('err', msg) : console.error(msg);
+    this.commands.err ? this.exec('err', msg) : console.error(msg);
     return throwError(msg);
+  }
+
+  unregisterCommand(name: string) {
+    if (!this.commands[name]) {
+      this.exec('err', `Command '${name}' was not found`);
+    }
+    const { [name]: _, ...commands } = this.commands;
+
+    this.commands = commands;
   }
 }
