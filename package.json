@@ -37,11 +37,10 @@
     "pre-publish:minor": "run-s bump-version:minor build:lib-pack",
     "pre-publish:major": "run-s bump-version:major build:lib-pack",
     "pre-publish:patch": "run-s bump-version:patch build:lib-pack",
-    "publish": "npm publish --access public ./dist/libs/ngx-cmd/stumpam-ngx-cmd-1.0.0.tgz"
+    "publish": "npm publish --access public ./dist/libs/ngx-cmd/stumpam-ngx-cmd-1.1.0.tgz"
   },
   "private": true,
   "dependencies": {
-    "@nrwl/angular": "8.4.12",
     "@angular/animations": "^8.2.3",
     "@angular/common": "^8.2.3",
     "@angular/compiler": "^8.2.3",
@@ -50,7 +49,9 @@
     "@angular/platform-browser": "^8.2.3",
     "@angular/platform-browser-dynamic": "^8.2.3",
     "@angular/router": "^8.2.3",
+    "@nrwl/angular": "8.4.12",
     "core-js": "^3.2.1",
+    "lodash-es": "^4.17.15",
     "rxjs": "~6.5.2",
     "tslib": "^1.10.0",
     "zone.js": "^0.10.2"
@@ -65,10 +66,11 @@
     "@nrwl/jest": "8.4.12",
     "@nrwl/workspace": "8.4.12",
     "@types/jest": "24.0.18",
+    "@types/lodash-es": "^4.17.3",
     "@types/node": "~12.7.2",
     "codelyzer": "~5.1.0",
-    "cypress": "3.4.1",
     "copy": "^0.3.2",
+    "cypress": "3.4.1",
     "dotenv": "8.1.0",
     "eslint": "6.2.2",
     "jest": "24.9.0",
