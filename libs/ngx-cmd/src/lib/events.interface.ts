@@ -28,3 +28,17 @@ export interface Warn {
 }
 
 export type WarnPayload = any;
+
+export enum EventType {
+  event = 'evt',
+  command = 'cmd',
+  store = 'store',
+  'store.clear' = 'store.clear',
+  'store.dispatch' = 'store.dispatch',
+}
+
+export interface StoreReducer {
+  path: string;
+  reducer: ((state: any) => any) | string;
+  name?: string;
+}
