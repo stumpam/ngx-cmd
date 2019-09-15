@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Observable, Subject, merge } from 'rxjs';
+import { omit as _omit } from 'lodash-es';
+import { Observable, Subject } from 'rxjs';
+import { filter, finalize, pluck, share } from 'rxjs/operators';
 
-import { CommandService } from './command.service';
 import {
   Error,
   ErrPayload,
@@ -12,14 +13,13 @@ import {
   Warn,
   WarnPayload,
 } from './events.interface';
-import { filter, pluck } from 'rxjs/operators';
 
 export let evtß: EventsService | undefined;
 
 export const evt: Evt = (event: Event | string, payload?: any) =>
   evtß.emit(event as any, payload);
 
-export const getEvt = (name: string) => evtß.getEvt(name);
+export const onEvt = (name: string) => evtß.onEvt(name);
 
 export const getEvts = () => evtß.getEvents$();
 
@@ -34,24 +34,27 @@ export const warn = (payload: any) => evtß.emit('warn', payload);
 })
 export class EventsService {
   private readonly events$ = new Subject<Event>();
-  readonly allEvents$ = merge(this.cmd.getCommandEvt(), this.events$);
+  private subs: Record<string, Observable<Event>> = {};
 
-  constructor(private readonly cmd: CommandService) {
+  constructor() {
     evtß = this;
-    cmd.registerCommand('err', this.err.bind(this));
-    cmd.registerCommand('warn', this.warn.bind(this));
-    cmd.registerCommand('emit', this.emit.bind(this));
   }
 
   getEvents$(): Observable<Event> {
     return this.events$.asObservable();
   }
 
-  getEvt(name: string) {
-    return this.events$.pipe(
-      filter(event => event.type === `evt:${name}`),
-      pluck('payload'),
-    );
+  onEvt(name: string) {
+    if (!this.subs[name]) {
+      this.subs[name] = this.events$.pipe(
+        filter(event => event.type === `evt:${name}`),
+        pluck('payload'),
+        finalize(() => (this.subs = _omit(this.subs, name))),
+        share(),
+      );
+    }
+
+    return this.subs[name];
   }
 
   emit(name: string, payload?: any): void;
