@@ -2,6 +2,9 @@
 import { TestBed } from '@angular/core/testing';
 
 import { CommandService, ExecType } from './command.service';
+import { err } from './events.service';
+
+jest.mock('./events.service');
 
 class Test {
   number = 0;
@@ -124,13 +127,12 @@ describe('CommandService', () => {
     });
 
     it('it should throw Error when bad command was used', done => {
-      console.error = jest.fn();
       service.exec('test').subscribe(
-        _ => {},
-        err => {
-          expect(err).toBe(`Command 'test' was not found`);
+        () => {},
+        error => {
+          expect(error).toBe(`Command 'test' was not found`);
           // tslint:disable-next-line: no-unbound-method
-          expect(console.error).toBeCalled();
+          expect(err).toBeCalled();
           done();
         },
       );

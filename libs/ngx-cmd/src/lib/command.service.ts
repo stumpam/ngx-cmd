@@ -3,7 +3,8 @@ import { EMPTY, isObservable, Observable, of, Subject, throwError } from 'rxjs';
 import { filter, switchMap } from 'rxjs/operators';
 
 import { Event } from './events.interface';
-import { switchcase } from './fns/switchcase';
+import { err } from './events.service';
+import { switchcase } from './fns';
 
 export const enum ExecType {
   'ignore',
@@ -57,7 +58,7 @@ export class CommandService {
 
   registerCommand(name: string, fn: (...args: any) => any): void {
     if (this.commands[name]) {
-      this.exec('err', `Command ${name} already exists`);
+      err(`Command ${name} already exists`);
     }
 
     this.commands = { ...this.commands, [name]: fn };
@@ -70,7 +71,7 @@ export class CommandService {
     });
   }
 
-  getCommandEvt(): Observable<Event> {
+  getCommandEvts$(): Observable<Event> {
     return this.commandEvt$.asObservable();
   }
 
@@ -118,9 +119,13 @@ export class CommandService {
     );
   }
 
+  getCmd(name: string) {
+    return this.commands[name];
+  }
+
   private error(name: string): Observable<never> {
     const msg = `Command '${name}' was not found`;
-    this.commands.err ? this.exec('err', msg) : console.error(msg);
+    err(msg);
     return throwError(msg);
   }
 
