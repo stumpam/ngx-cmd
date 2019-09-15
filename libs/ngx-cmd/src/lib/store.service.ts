@@ -20,6 +20,8 @@ export const select = (path: string) => storeß.select(path);
 
 export const dispatch = (event: string) => storeß.dispatch(event);
 
+let init = true;
+
 @Injectable({
   providedIn: 'root',
 })
@@ -71,6 +73,11 @@ export class StoreService {
     const typedEvent = `${type}:${event}`;
     if (!this.reducers[typedEvent]) {
       this.reducers[typedEvent] = [];
+    }
+
+    if (init) {
+      this.processReducers();
+      init = false;
     }
 
     this.reducers[typedEvent] = [
