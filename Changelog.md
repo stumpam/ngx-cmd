@@ -1,3 +1,9 @@
+## Version 2.1.1 - 16.9.2019
+- Fix store function
+
+## Version 2.0.1 - 16.9.2019
+- Fix missing exports
+
 ## Version 2.0.0 - 15.9.2019
 - Added Store
 
