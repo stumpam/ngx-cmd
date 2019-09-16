@@ -1,7 +1,13 @@
 import { Injectable } from '@angular/core';
 import { get as _get, omit as _omit, setWith as _setWith } from 'lodash-es';
-import { merge, Observable, Subject } from 'rxjs';
-import { filter, finalize, pluck, share } from 'rxjs/operators';
+import { defer, merge, Observable, Subject } from 'rxjs';
+import {
+  distinctUntilChanged,
+  filter,
+  pluck,
+  share,
+  startWith,
+} from 'rxjs/operators';
 
 import { CommandService } from './command.service';
 import { Event, EventType, StoreReducer } from './events.interface';
@@ -30,6 +36,16 @@ export const unRegReducer = (
   type: EventType = EventType['store.dispatch'],
 ) => storeß.unregisterReducer(event, type);
 
+export const store = (path: string, value: any) => storeß.set(path, value);
+
+export const onStore = () => storeß.getStoreEvents$();
+
+const doOnSubscribe = <T>(onSubscribe: () => any) => (source$: Observable<T>) =>
+  defer(() => {
+    const data = onSubscribe();
+    return data ? source$.pipe(startWith(data)) : source$;
+  });
+
 let init = true;
 
 @Injectable({
@@ -38,7 +54,6 @@ let init = true;
 export class StoreService {
   private readonly store: Store = {};
   private readonly storeEvents$ = new Subject<Event>();
-  private subs: Record<string, Observable<Event>> = {};
   private readonly events$ = merge(
     this.storeEvents$.pipe(filter(evt => evt.type.startsWith('str.dsp'))),
     this.cmd.getCommandEvts$(),
@@ -51,6 +66,10 @@ export class StoreService {
     private readonly evtß: EventsService,
   ) {
     storeß = this;
+  }
+
+  getStoreEvents$() {
+    return this.storeEvents$.asObservable();
   }
 
   get(path: string) {
@@ -102,16 +121,13 @@ export class StoreService {
   }
 
   select(name: string) {
-    if (!this.subs[name]) {
-      this.subs[name] = this.storeEvents$.pipe(
-        filter(event => event.type === `str:${name}`),
-        pluck('payload'),
-        finalize(() => (this.subs = _omit(this.subs, name))),
-        share(),
-      );
-    }
-
-    return this.subs[name];
+    return this.storeEvents$.pipe(
+      filter(event => event.type === `store:${name}`),
+      pluck('payload'),
+      doOnSubscribe(() => this.get(name)),
+      share(),
+      distinctUntilChanged(),
+    );
   }
 
   dispatch(event: string) {
