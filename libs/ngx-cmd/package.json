@@ -1,6 +1,6 @@
 {
   "name": "@stumpam/ngx-cmd",
-  "version": "2.0.0",
+  "version": "2.1.1",
   "description": "Command library for Angular",
   "homepage": "https://github.com/stumpam/ngx-cmd",
   "author": "Martin Štumpa (https://github.com/stumpam)",
