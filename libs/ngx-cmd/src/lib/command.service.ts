@@ -11,11 +11,9 @@ export const enum ExecType {
   'wait',
 }
 
-declare global {
-  // tslint:disable-next-line: no-empty-interface
-  export interface Cmd {
-    // <T>(name: string, payload?: any, ctx?: object): Observable<T>;
-  }
+// tslint:disable-next-line: no-empty-interface
+export interface Cmd {
+  // <T>(name: string, payload?: any, ctx?: object): Observable<T>;
 }
 
 interface CommandStore {
@@ -42,7 +40,7 @@ export const cmdIgnore: Cmd = <T>(name: string, payload?: any): Observable<T> =>
 export const regCmd = (name: string, fn: (...args: any) => any) =>
   cmdß.registerCommand(name, fn);
 
-export const regManCmd = (scope: string, cmds: CommandObject) =>
+export const regManyCmd = (scope: string, cmds: CommandObject) =>
   cmdß.registerManyCommands(scope, cmds);
 
 @Injectable({

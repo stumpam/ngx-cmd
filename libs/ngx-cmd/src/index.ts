@@ -6,6 +6,25 @@ export {
   cmdWait,
   cmdIgnore,
   regCmd,
+  regManyCmd,
+  Cmd,
+  CommandObject,
 } from './lib/command.service';
-export { EventsService } from './lib/events.service';
-export { Event, Evt } from './lib/events.interface';
+export {
+  StoreService,
+  dispatch,
+  getFromStore,
+  select,
+  regReducer,
+  unRegReducer,
+} from './lib/store.service';
+export {
+  EventsService,
+  err,
+  log,
+  warn,
+  onEvt,
+  evt,
+  getEvts,
+} from './lib/events.service';
+export { Event, Evt, EventType, StoreReducer } from './lib/events.interface';

@@ -7,10 +7,8 @@ import { CommandService } from './command.service';
 import { Event, EventType, StoreReducer } from './events.interface';
 import { err, EventsService } from './events.service';
 
-declare global {
-  // tslint:disable-next-line: no-empty-interface
-  export interface Store {}
-}
+// tslint:disable-next-line: no-empty-interface
+export interface Store {}
 
 let storeß: StoreService;
 
@@ -19,6 +17,18 @@ export const getFromStore = (path: string) => storeß.get(path);
 export const select = (path: string) => storeß.select(path);
 
 export const dispatch = (event: string) => storeß.dispatch(event);
+
+export const regReducer = (
+  event: 'string',
+  path: string,
+  reducer: string | string | ((state: any) => any),
+  type: EventType = EventType['store.dispatch'],
+) => storeß.registerReducer(event, path, reducer, type);
+
+export const unRegReducer = (
+  event: string,
+  type: EventType = EventType['store.dispatch'],
+) => storeß.unregisterReducer(event, type);
 
 let init = true;
 
@@ -34,7 +44,7 @@ export class StoreService {
     this.cmd.getCommandEvts$(),
     this.evtß.getEvents$(),
   );
-  private reducers: Record<string, StoreReducer[]> = {};
+  private reducers: Record<string, StoreReducer> = {};
 
   constructor(
     private readonly cmd: CommandService,
@@ -52,14 +62,12 @@ export class StoreService {
       const obj = this.reducers[evt.type];
       if (!obj) return;
 
-      obj.forEach(red => {
-        const fn =
-          typeof red.reducer === 'string'
-            ? this.cmd.getCmd(red.reducer)
-            : red.reducer;
+      const fn =
+        typeof obj.reducer === 'string'
+          ? this.cmd.getCmd(obj.reducer)
+          : obj.reducer;
 
-        this.set(red.path, fn(this.get(red.path)));
-      });
+      this.set(obj.path, fn(this.get(obj.path)));
     });
   }
 
@@ -67,39 +75,30 @@ export class StoreService {
     event: string,
     path: string,
     reducer: string | ((state: any) => any),
-    name?: string,
     type: EventType = EventType['store.dispatch'],
   ) {
     const typedEvent = `${type}:${event}`;
-    if (!this.reducers[typedEvent]) {
-      this.reducers[typedEvent] = [];
-    }
 
     if (init) {
       this.processReducers();
       init = false;
     }
 
-    this.reducers[typedEvent] = [
-      ...this.reducers[typedEvent],
-      {
-        path,
-        reducer,
-        name,
-      },
-    ];
+    this.reducers[typedEvent] = {
+      path,
+      reducer,
+    };
   }
 
   unregisterReducer(
     event: string,
-    name: string,
     type: EventType = EventType['store.dispatch'],
   ) {
-    let reducers = this.reducers[`${type}:${event}`];
+    if (!this.reducers[`${type}:${event}`]) {
+      err(`[Store] Unable to unregister reducer: ${type}:${event}`);
+    }
 
-    if (!reducers) err(`[Store] Unable to unregister reducer: ${name}`);
-
-    reducers = reducers.filter(red => red.name !== name);
+    this.reducers = _omit(this.reducers, `${type}:${event}`);
   }
 
   select(name: string) {
