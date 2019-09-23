@@ -1,6 +1,6 @@
 {
   "name": "ngx-cmd",
-  "version": "2.1.2",
+  "version": "2.1.1",
   "license": "MIT",
   "scripts": {
     "ng": "ng",
