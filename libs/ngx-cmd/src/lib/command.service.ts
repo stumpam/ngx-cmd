@@ -11,9 +11,11 @@ export const enum ExecType {
   'wait',
 }
 
-// tslint:disable-next-line: no-empty-interface
-export interface Cmd {
-  // <T>(name: string, payload?: any, ctx?: object): Observable<T>;
+declare global {
+  export interface Cmd {
+    // tslint:disable-next-line: callable-types
+    <T>(name: string, payload?: any): Observable<T>;
+  }
 }
 
 interface CommandStore {

@@ -1,3 +1,7 @@
+## Version 2.2.0 - 23.9.2019
+- Fix dependencies
+- Fix Cmd interface
+
 ## Version 2.1.0 - 16.9.2019
 - Fix store function
 

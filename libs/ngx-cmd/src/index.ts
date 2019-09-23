@@ -7,7 +7,6 @@ export {
   cmdIgnore,
   regCmd,
   regManyCmd,
-  Cmd,
   CommandObject,
 } from './lib/command.service';
 export {
