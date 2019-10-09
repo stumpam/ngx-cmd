@@ -1,6 +1,6 @@
 {
   "name": "@stumpam/ngx-cmd",
-  "version": "2.3.0",
+  "version": "2.3.2",
   "description": "Command library for Angular",
   "homepage": "https://github.com/stumpam/ngx-cmd",
   "author": "Martin Štumpa (https://github.com/stumpam)",
@@ -20,8 +20,10 @@
     "url": "https://github.com/stumpam/ngx-cmd/issues"
   },
   "peerDependencies": {
-    "@angular/core": "^8.1.1",
-    "rxjs": "~6.5.2",
+    "@angular/core": "^8.2.9",
+    "rxjs": "~6.5.2"
+  },
+  "dependencies": {
     "lodash-es": "4.17.15"
   }
 }

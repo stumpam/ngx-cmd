@@ -1,3 +1,6 @@
+## Verison 2.3.2 - 9.10.2019
+- fix lodash-es dependency
+
 ## Version 2.3.0 - 9.10.2019
 - Provide store fn as public API
 - extend reducer by event payload
