@@ -25,7 +25,7 @@ export const select = (path: string) => storeß.select(path);
 export const dispatch = (event: string) => storeß.dispatch(event);
 
 export const regReducer = (
-  event: 'string',
+  event: string,
   path: string,
   reducer: string | string | ((state: any) => any),
   type: EventType = EventType['store.dispatch'],
@@ -77,7 +77,7 @@ export class StoreService {
   }
 
   processReducers() {
-    this.events$.subscribe(evt => {
+    this.events$.subscribe((evt: Event) => {
       const obj = this.reducers[evt.type];
       if (!obj) return;
 
@@ -86,7 +86,7 @@ export class StoreService {
           ? this.cmd.getCmd(obj.reducer)
           : obj.reducer;
 
-      this.set(obj.path, fn(this.get(obj.path)));
+      this.set(obj.path, fn([this.get(obj.path), evt.payload]));
     });
   }
 

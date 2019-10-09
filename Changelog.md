@@ -1,3 +1,7 @@
+## Version 2.3.0 - 9.10.2019
+- Provide store fn as public API
+- extend reducer by event payload
+
 ## Version 2.1.0 - 16.9.2019
 - Fix store function
 
