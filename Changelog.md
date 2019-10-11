@@ -1,3 +1,7 @@
+## Version 2.4.0 - 11.10.2019
+- add sync cmd function
+- restore global Cmd interface
+
 ## Verison 2.3.2 - 9.10.2019
 - fix lodash-es dependency
 

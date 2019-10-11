@@ -3,11 +3,11 @@ export {
   CommandService,
   ExecType,
   cmd,
+  cmdSync,
   cmdWait,
   cmdIgnore,
   regCmd,
   regManyCmd,
-  Cmd,
   CommandObject,
 } from './lib/command.service';
 export {
