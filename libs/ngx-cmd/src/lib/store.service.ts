@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { get as _get, omit as _omit, setWith as _setWith } from 'lodash-es';
-import { defer, merge, Observable, Subject } from 'rxjs';
+import { defer, isObservable, merge, Observable, Subject } from 'rxjs';
 import {
   distinctUntilChanged,
   filter,
@@ -78,6 +78,7 @@ export class StoreService {
 
   processReducers() {
     this.events$.subscribe((evt: Event) => {
+      //TODO: change to pipe filter
       const obj = this.reducers[evt.type];
       if (!obj) return;
 
@@ -86,7 +87,13 @@ export class StoreService {
           ? this.cmd.getCmd(obj.reducer)
           : obj.reducer;
 
-      this.set(obj.path, fn([this.get(obj.path), evt.payload]));
+      const result = fn([this.get(obj.path), evt.payload]);
+      //TODO: Change whole fn to observable
+      if (isObservable(result)) {
+        result.subscribe(data => this.set(obj.path, data));
+      } else {
+        this.set(obj.path, result);
+      }
     });
   }
 

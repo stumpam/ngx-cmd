@@ -1,3 +1,6 @@
+## Version 2.5.0 - 11.10.2019
+- add observables to reducers
+
 ## Version 2.4.0 - 11.10.2019
 - add sync cmd function
 - restore global Cmd interface
