@@ -1,6 +1,16 @@
-## Version 2.2.0 - 23.9.2019
-- Fix dependencies
-- Fix Cmd interface
+## Version 2.5.0 - 11.10.2019
+- add observables to reducers
+
+## Version 2.4.0 - 11.10.2019
+- add sync cmd function
+- restore global Cmd interface
+
+## Verison 2.3.2 - 9.10.2019
+- fix lodash-es dependency
+
+## Version 2.3.0 - 9.10.2019
+- Provide store fn as public API
+- extend reducer by event payload
 
 ## Version 2.1.0 - 16.9.2019
 - Fix store function

@@ -6,4 +6,4 @@ Command library for Angular
 
 1. import to angular main module `NgxModule` from `@stumpam/ngx-cmd`
 2. register command `regCmd('name', () => console.log('name command'))`
-3. use command `cmd('name)` -> in console will log `name`
+3. use command `cmd('name')` -> in console will log `name`

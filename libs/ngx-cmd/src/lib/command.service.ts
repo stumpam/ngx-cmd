@@ -12,9 +12,16 @@ export const enum ExecType {
 }
 
 declare global {
-  export interface Cmd {
-    // tslint:disable-next-line: callable-types
-    <T>(name: string, payload?: any): Observable<T>;
+  // tslint:disable-next-line: no-empty-interface
+  interface Cmd {
+    // <T>(name: string, payload?: any): Observable<T>;
+  }
+}
+
+declare global {
+  // tslint:disable-next-line: no-empty-interface
+  interface CmdSync {
+    // <T>(name: string, payload?: any): Observable<T>;
   }
 }
 
@@ -30,14 +37,20 @@ const ignore = (): Observable<never> => EMPTY;
 
 let cmdß: CommandService | undefined;
 
-export const cmd: Cmd = <T>(name: string, payload?: any, type?: ExecType) =>
-  cmdß.exec<T>(name, payload, type);
+export const cmd: Cmd = (name: string, payload?: any, type?: ExecType) =>
+  cmdß.exec(name, payload, type);
 
-export const cmdWait: Cmd = <T>(name: string, payload?: any): Observable<T> =>
-  cmdß.exec<T>(name, payload, ExecType.wait);
+export const cmdSync: CmdSync = (
+  name: string,
+  payload?: any,
+  type?: ExecType,
+) => cmdß.exec(name, payload, type, true);
 
-export const cmdIgnore: Cmd = <T>(name: string, payload?: any): Observable<T> =>
-  cmdß.exec<T>(name, payload, ExecType.ignore);
+export const cmdWait: Cmd = (name: string, payload?: any) =>
+  cmdß.exec(name, payload, ExecType.wait);
+
+export const cmdIgnore: Cmd = (name: string, payload?: any) =>
+  cmdß.exec(name, payload, ExecType.ignore);
 
 export const regCmd = (name: string, fn: (...args: any) => any) =>
   cmdß.registerCommand(name, fn);
@@ -79,7 +92,8 @@ export class CommandService {
     name: string,
     payload?: any,
     type?: ExecType,
-  ): Observable<T> {
+    sync = false,
+  ): Observable<T> | T {
     if (
       this.commands[name] === undefined ||
       typeof this.commands[name] !== 'function'
@@ -105,7 +119,13 @@ export class CommandService {
     }
 
     this.commandEvt$.next({ type: 'cmd:exec', payload: name });
-    return !result$ ? EMPTY : isObservable(result$) ? result$ : of(result$);
+    return !result$
+      ? EMPTY
+      : isObservable(result$)
+      ? result$
+      : sync
+      ? result$
+      : of(result$);
   }
 
   private wait<T>(

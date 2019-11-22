@@ -3,6 +3,7 @@ export {
   CommandService,
   ExecType,
   cmd,
+  cmdSync,
   cmdWait,
   cmdIgnore,
   regCmd,
@@ -14,6 +15,7 @@ export {
   dispatch,
   getFromStore,
   select,
+  store,
   regReducer,
   unRegReducer,
 } from './lib/store.service';
