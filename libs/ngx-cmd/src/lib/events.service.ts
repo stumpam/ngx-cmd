@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { omit as _omit } from 'lodash-es';
 import { Observable, Subject } from 'rxjs';
 import { filter, finalize, pluck, share } from 'rxjs/operators';
 
@@ -13,6 +12,7 @@ import {
   Warn,
   WarnPayload,
 } from './events.interface';
+import { omit } from './fns';
 
 export let evtß: EventsService | undefined;
 
@@ -49,7 +49,7 @@ export class EventsService {
       this.subs[name] = this.events$.pipe(
         filter(event => event.type === `evt:${name}`),
         pluck('payload'),
-        finalize(() => (this.subs = _omit(this.subs, name))),
+        finalize(() => (this.subs = omit(name, this.subs))),
         share(),
       );
     }

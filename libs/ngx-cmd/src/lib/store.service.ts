@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { get as _get, omit as _omit, setWith as _setWith } from 'lodash-es';
 import { defer, isObservable, merge, Observable, Subject } from 'rxjs';
 import {
   distinctUntilChanged,
@@ -12,6 +11,7 @@ import {
 import { CommandService } from './command.service';
 import { Event, EventType, StoreReducer } from './events.interface';
 import { err, EventsService } from './events.service';
+import { get, omit, set } from './fns';
 
 // tslint:disable-next-line: no-empty-interface
 export interface Store {}
@@ -73,7 +73,7 @@ export class StoreService {
   }
 
   get(path: string) {
-    return _get(this.store, path);
+    return get(path, this.store);
   }
 
   processReducers() {
@@ -124,7 +124,7 @@ export class StoreService {
       err(`[Store] Unable to unregister reducer: ${type}:${event}`);
     }
 
-    this.reducers = _omit(this.reducers, `${type}:${event}`);
+    this.reducers = omit(`${type}:${event}`, this.reducers);
   }
 
   select(name: string) {
@@ -144,12 +144,12 @@ export class StoreService {
   set(path: string, payload: any) {
     if (path === '') return err('[Store] Path can not be empty!');
 
-    _setWith(this.store, path, payload, Object);
+    set(path, this.store, payload);
     this.storeEvents$.next({ type: `store:${path}`, payload });
   }
 
   clear(path: string) {
-    _omit(this.store, path);
+    omit(path, this.store);
 
     this.storeEvents$.next({ type: `store.clear:${path}` });
   }
