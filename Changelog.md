@@ -1,3 +1,6 @@
+## Version 2.6.0 - 24.11.2019
+- remove lodash-es dependency
+
 ## Version 2.5.0 - 11.10.2019
 - add observables to reducers
 
