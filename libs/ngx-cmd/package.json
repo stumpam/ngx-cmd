@@ -22,8 +22,5 @@
   "peerDependencies": {
     "@angular/core": "^8.2.9",
     "rxjs": "~6.5.2"
-  },
-  "dependencies": {
-    "lodash-es": "4.17.15"
   }
 }
