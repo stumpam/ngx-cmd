@@ -51,7 +51,6 @@
     "@angular/router": "^8.2.3",
     "@nrwl/angular": "8.4.12",
     "core-js": "^3.2.1",
-    "lodash-es": "^4.17.15",
     "rxjs": "~6.5.2",
     "tslib": "^1.10.0",
     "zone.js": "^0.10.2"
