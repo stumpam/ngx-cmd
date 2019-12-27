@@ -88,24 +88,30 @@ export class CommandService {
     return this.commandEvt$.asObservable();
   }
 
-  exec<T extends any>(
+  exec<T extends any, U extends boolean = false>(
     name: string,
     payload?: any,
     type?: ExecType,
-    sync = false,
-  ): Observable<T> | T {
+    sync?: U,
+  ): T extends Observable<T>
+    ? Observable<T>
+    : U extends true
+    ? T
+    : Observable<T> {
     if (
       this.commands[name] === undefined ||
       typeof this.commands[name] !== 'function'
     ) {
+      const msg = `Command '${name}' was not found`;
+
       const cases = {
         [ExecType.ignore]: ignore,
         [ExecType.wait]: this.wait.bind(this),
       };
 
-      if (!(type + 1)) sync = true;
+      if (!(type + 1)) err(msg);
 
-      return switchcase(cases)(this.error.bind(this))(type)(
+      return switchcase(cases)(() => throwError(msg))(type)(
         name,
         payload,
         type,
@@ -121,13 +127,11 @@ export class CommandService {
     }
 
     this.commandEvt$.next({ type: 'cmd:exec', payload: name });
-    return !result$
-      ? EMPTY
-      : isObservable(result$)
+    return isObservable(result$)
       ? result$
       : sync
       ? result$
-      : of(result$);
+      : (of(result$) as any);
   }
 
   private wait<T>(
@@ -143,12 +147,6 @@ export class CommandService {
 
   getCmd(name: string) {
     return this.commands[name];
-  }
-
-  private error(name: string): Observable<never> {
-    const msg = `Command '${name}' was not found`;
-    err(msg);
-    return throwError(msg);
   }
 
   unregisterCommand(name: string) {
