@@ -137,6 +137,12 @@ describe('CommandService', () => {
         },
       );
     });
+
+    it('it should throw Error when bad command was used sync way', () => {
+      service.exec('test');
+
+      expect(err).toBeCalledWith(`Command 'test' was not found`);
+    });
   });
 
   describe('Test existency of command', () => {
