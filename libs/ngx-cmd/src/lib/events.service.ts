@@ -23,11 +23,11 @@ export const onEvt = (name: string) => evtß.onEvt(name);
 
 export const getEvts = () => evtß.getEvents$();
 
-export const err = (payload: any) => evtß.emit('err', payload);
+export const err = (payload: any) => evtß.err(payload);
 
-export const log = (payload: any) => evtß.emit('log', payload);
+export const log = (payload: any) => evtß.log(payload);
 
-export const warn = (payload: any) => evtß.emit('warn', payload);
+export const warn = (payload: any) => evtß.warn(payload);
 
 @Injectable({
   providedIn: 'root',
