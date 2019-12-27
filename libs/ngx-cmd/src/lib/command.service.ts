@@ -103,6 +103,8 @@ export class CommandService {
         [ExecType.wait]: this.wait.bind(this),
       };
 
+      if (!(type + 1)) sync = true;
+
       return switchcase(cases)(this.error.bind(this))(type)(
         name,
         payload,
